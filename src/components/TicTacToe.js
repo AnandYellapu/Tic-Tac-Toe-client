@@ -10,13 +10,12 @@ import {
   AiOutlineFire,
 } from 'react-icons/ai';
 import Square from './Square';
-
-// Material-UI imports
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+
 
 // Define light and dark themes
 const lightTheme = createTheme({
@@ -63,7 +62,7 @@ const TicTacToe = () => {
   const fetchNewGame = async () => {
     try {
       setStartTime(Date.now());
-      const response = await fetch('http://localhost:1100/api/game/new-game', { method: 'POST' });
+      const response = await fetch('https://tic-tac-toe-sypn.onrender.com/api/game/new-game', { method: 'POST' });
       const data = await response.json();
       setGameId(data._id);
       setGameData({
@@ -84,7 +83,7 @@ const TicTacToe = () => {
 
   const makeMove = async (row, col) => {
     try {
-      const response = await fetch(`http://localhost:1100/api/game/${gameId}/move`, {
+      const response = await fetch(`https://tic-tac-toe-sypn.onrender.com/api/game/${gameId}/move`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
