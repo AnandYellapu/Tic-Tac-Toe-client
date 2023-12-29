@@ -81,6 +81,16 @@ const TicTacToe = () => {
     }
   };
 
+  // const makeMove = async (row, col) => {
+  //   try {
+  //     const response = await fetch(`https://tic-tac-toe-sypn.onrender.com/api/game/${gameId}/move`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ row, col, player: gameData.history[gameData.stepNumber].currentPlayer }),
+  //     });
+
   const makeMove = async (row, col) => {
     try {
       const response = await fetch(`https://tic-tac-toe-sypn.onrender.com/api/game/${gameId}/move`, {
@@ -90,6 +100,10 @@ const TicTacToe = () => {
         },
         body: JSON.stringify({ row, col, player: gameData.history[gameData.stepNumber].currentPlayer }),
       });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
       const newData = await response.json();
       const endTime = Date.now();
