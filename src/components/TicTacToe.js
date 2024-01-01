@@ -59,7 +59,7 @@ const TicTacToe = () => {
   const fetchNewGame = async () => {
     try {
       setStartTime(Date.now());
-      const response = await fetch('http://localhost:1100/api/game/new-game', { method: 'POST' });
+      const response = await fetch('https://tic-tac-toe-sypn.onrender.com/api/game/new-game', { method: 'POST' });
       const data = await response.json();
       setGameId(data._id);
       setGameData({
@@ -86,7 +86,7 @@ const TicTacToe = () => {
 
   const makeMove = async (row, col, player) => {
     try {
-      const response = await fetch(`http://localhost:1100/api/game/${gameId}/move`, {
+      const response = await fetch(`https://tic-tac-toe-sypn.onrender.com/api/game/${gameId}/move`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
