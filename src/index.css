@@ -537,3 +537,138 @@
 .fire {
   color: #ff5722;
 }
+
+
+/* Add styles for the game mode select */
+.game-mode-select {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.select-label {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.select-dropdown {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #3498db;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.select-dropdown:hover {
+  border-color: #2980b9;
+}
+
+/* Optional: Style for the selected option */
+.select-dropdown option:checked {
+  background-color: #3498db;
+  color: #fff;
+}
+
+
+
+/* Add styles for the difficulty select */
+.difficulty-select {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.select-label {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.select-dropdown {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #27ae60;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.select-dropdown:hover {
+  border-color: #2ecc71;
+}
+
+/* Optional: Style for the selected option */
+.select-dropdown option:checked {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+
+
+
+/* Base styles */
+.player-namesX {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.player-namesX input {
+  padding: 12px;
+  margin-top: 10px;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 300px; /* Adjust the width as needed */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.player-namesX input:focus {
+  outline: none;
+  border-color: #2ecc71;
+  box-shadow: 0 0 10px rgba(41, 128, 185, 0.5);
+}
+
+/* Animation for input label */
+.player-namesX label {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #3498db;
+  transition: transform 0.3s;
+}
+
+.player-namesX input:focus + label, .player-namesX input:valid + label {
+  transform: translateY(-25px);
+  font-size: 14px;
+  color: #2980b9;
+}
+
+/* Media query for screens with a maximum width of 600px */
+@media only screen and (max-width: 600px) {
+  .player-namesX {
+    margin-bottom: 10px;
+  }
+
+  .player-namesX input {
+    width: 100%;
+  }
+}
+
+/* Media query for screens with a minimum width of 601px and a maximum width of 1024px */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  .player-namesX {
+    margin-bottom: 15px;
+  }
+}
+
+/* Media query for screens with a minimum width of 1025px */
+@media only screen and (min-width: 1025px) {
+  .player-namesX {
+    margin-bottom: 25px;
+  }
+}
