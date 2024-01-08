@@ -1,4 +1,4 @@
-// components/Square.js
+// components/3x3/Square.js
 import React from 'react';
 
 const Square = ({ value, onClick }) => {

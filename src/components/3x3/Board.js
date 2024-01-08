@@ -1,4 +1,4 @@
-// components/Board.js
+// components/3x3/Board.js
 import React from 'react';
 import Square from './Square';
 

@@ -1,4 +1,4 @@
-//components/Multiplayer.js
+//components/3x3/Multiplayer.js
 import React, { useState, useEffect } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsCircle } from 'react-icons/bs';
@@ -24,7 +24,7 @@ const darkTheme = createTheme({
   },
 });
 
-const TicTacToe = () => {
+const Multiplayer = () => {
   const [gameId, setGameId] = useState(null);
   const [gameData, setGameData] = useState({
     history: [{ board: [['', '', ''], ['', '', ''], ['', '', '']], currentPlayer: 'X' }],
@@ -272,4 +272,4 @@ const TicTacToe = () => {
   );
 };
 
-export default TicTacToe;
+export default Multiplayer;

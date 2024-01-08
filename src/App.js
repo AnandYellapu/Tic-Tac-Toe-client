@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TicTacToe from "./components/TicTacToe";
+import TicTacToe from "./components/3x3/TicTacToe";
+
 
 
 function App() {
@@ -15,6 +16,3 @@ function App() {
 }
 
 export default App;
-
-
-

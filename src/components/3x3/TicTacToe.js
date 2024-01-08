@@ -1,17 +1,21 @@
-//components/TicTacToe.js
+//components/3x3/TicTacToe.js
 import React, { useState, useEffect } from 'react';
 import { AiOutlineClose, AiOutlineHistory, AiOutlineClockCircle, AiOutlineTrophy, AiOutlineReload, AiOutlineFire } from 'react-icons/ai';
 import { BsCircle } from 'react-icons/bs';
 import { AiFillCrown } from 'react-icons/ai';
-import Square from './Square';
+import Square from '../../components/3x3/Square';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import Multiplayer from './Multiplayer';
+import Multiplayer from '../../components/3x3/Multiplayer';
+import Four from '../../components/4x4/Four';
+import FourMultiplayer from '../../components/4x4/FourMultiplayer';
 
-// Define light and dark themes
+
+
+// // Define light and dark themes
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
@@ -51,6 +55,9 @@ const TicTacToe = () => {
   const [aiDifficulty, setAiDifficulty] = useState('easy');
   const [isAiTurn, setIsAiTurn] = useState(false);
   const [gameMode, setGameMode] = useState('ai');
+  const [gamesMode] = useState('ai4x4');
+ 
+  
 
   useEffect(() => {
     fetchNewGame();
@@ -112,6 +119,7 @@ const TicTacToe = () => {
             : (prevStats.averageDuration * prevStats.totalGames + duration) / (prevStats.totalGames + 1),
       }));
 
+
       setGameData((prevData) => ({
         ...prevData,
         history: [...prevData.history, newData],
@@ -157,19 +165,25 @@ const TicTacToe = () => {
     const randomIndex = Math.floor(Math.random() * emptySquares.length);
     return emptySquares[randomIndex];
   };
-  
-  
+ 
   const getBestMove = (board, player) => {
     let bestMove = null;
     let bestScore = player === 'O' ? -Infinity : Infinity;
   
+    // Iterate through all available moves
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (board[i][j] === '') {
+          // Make a move
           board[i][j] = player;
-          const score = minimax(board, 0, false);
+  
+          // Evaluate the move using an enhanced minimax algorithm with alpha-beta pruning
+          const score = enhancedMinimax(board, 0, -Infinity, Infinity, false);
+  
+          // Undo the move
           board[i][j] = '';
   
+          // Update the best move if needed
           if ((player === 'O' && score > bestScore) || (player === 'X' && score < bestScore)) {
             bestScore = score;
             bestMove = { row: i, col: j };
@@ -181,11 +195,11 @@ const TicTacToe = () => {
     return bestMove;
   };
   
-  const minimax = (board, depth, isMaximizing) => {
+  const enhancedMinimax = (board, depth, alpha, beta, isMaximizing) => {
     const result = checkWinner(board);
   
     if (result !== null) {
-      return result === 'O' ? 1 : -1;
+      return result === 'O' ? 1 - depth / 10 : depth / 10 - 1;
     }
   
     if (isDraw(board)) {
@@ -198,9 +212,11 @@ const TicTacToe = () => {
         for (let j = 0; j < 3; j++) {
           if (board[i][j] === '') {
             board[i][j] = 'O';
-            const score = minimax(board, depth + 1, false);
+            const score = enhancedMinimax(board, depth + 1, alpha, beta, false);
             board[i][j] = '';
             bestScore = Math.max(score, bestScore);
+            alpha = Math.max(alpha, score);
+            if (beta <= alpha) break; // Beta cutoff (pruning)
           }
         }
       }
@@ -211,15 +227,20 @@ const TicTacToe = () => {
         for (let j = 0; j < 3; j++) {
           if (board[i][j] === '') {
             board[i][j] = 'X';
-            const score = minimax(board, depth + 1, true);
+            const score = enhancedMinimax(board, depth + 1, alpha, beta, true);
             board[i][j] = '';
             bestScore = Math.min(score, bestScore);
+            beta = Math.min(beta, score);
+            if (beta <= alpha) break; // Alpha cutoff (pruning)
           }
         }
       }
       return bestScore;
     }
   };
+  
+  
+
   
 
   // Function to check for a winner
@@ -369,6 +390,8 @@ const isDraw = (board) => {
         <select value={aiDifficulty} onChange={(e) => setAiDifficulty(e.target.value)}>
           <option value="easy">Easy</option>
           <option value="hard">Hard</option>
+          <option value="extreme">Extreme</option>
+        
         </select>
       </label>
     </div>
@@ -383,206 +406,74 @@ const isDraw = (board) => {
   };
 
  
+
+
   const handleGameModeChange = (selectedMode) => {
     setGameMode(selectedMode);
   
     // Additional logic based on the selected game mode
     if (selectedMode === 'ai') {
-      // Perform actions specific to the AI game mode
-      console.log('Switched to AI game mode');
+      console.log('Switched to 3x3 AI game mode');
       setAiDifficulty('easy'); // Reset AI difficulty when switching to AI mode
     } else if (selectedMode === 'multiplayer') {
-      // Perform actions specific to the multiplayer game mode
       console.log('Switched to Multiplayer mode');
+    } else if (selectedMode === 'ai4x4') {
+      console.log('Switched to 4x4 AI game mode');
+      setAiDifficulty('easy');
+    } else if (selectedMode === 'fourmultiplayer') {
+    console.log('Switched to FourMultiplayer mode');
     }
   };
   
+  
 
-  const renderGameComponent = () => {         // eslint-disable-line
+
+  const renderGameComponent = () => {         //eslint-disable-line
     if (gameMode === 'ai') {
       return <TicTacToe />;
     } else if (gameMode === 'multiplayer') {
       return <Multiplayer />;
+    } else if (gamesMode === 'ai4x4') {
+      return <Four />;
+    }  else if (gamesMode === 'fourmultiplayer') {
+        return <FourMultiplayer />;
+      
     }
-
   };
+  
 
 
-// const renderPlayerNames = () => {            // eslint-disable-line
-//   if (gameMode === 'ai opponent') {
-//     return (
-//       <div className="player-names">
-//         <label>
-//           Player X Name:
-//           <input type="text" value={playerNames.playerX} onChange={(e) => handleNameChange('playerX', e)} disabled/>
-//         </label>
-//         <label>
-//           Player O Name:
-//           <input type="text" value={playerNames.playerO} onChange={(e) => handleNameChange('playerO', e)} />
-//         </label>
-//       </div>
-//     );
-//   } else if (gameMode === 'multiplayer') {
-//     return (
-//       <div className="player-names multiplayer-disabled">
-//         <label>
-//           Player X Name:
-//           <input type="text" value={playerNames.playerX} onChange={(e) => handleNameChange('playerX', e)} disabled />
-//         </label>
-//         <label>
-//           Player O Name:
-//           <input type="text" value={playerNames.playerO} onChange={(e) => handleNameChange('playerO', e)} />
-//         </label>
-//       </div>
-//     );
-//   }
-// };
-
-const renderPlayerNames = () => {       //eslint-disable-line
-  if (gameMode === 'ai opponent') {
-    return (
-      <div className="player-names">
-        <label>
-          Player X Name:
-          <input type="text" value={playerNames.playerX} onChange={(e) => handleNameChange('playerX', e)} />
-        </label>
-        <label>
-          Player O Name:
-          <input type="text" value={playerNames.playerO} onChange={(e) => handleNameChange('playerO', e)} />
-        </label>
-      </div>
-    );
-  } else if (gameMode === 'multiplayer') {
-    return (
-      <div className="player-names multiplayer-disabled">
-        {/* Player X Name input disabled for multiplayer mode */}
-        <label>
-          Player X Name:
-          <input type="text" value={playerNames.playerX} onChange={(e) => handleNameChange('playerX', e)} disabled />
-        </label>
-        {/* Player O Name input */}
-        <label>
-          Player O Name:
-          <input type="text" value={playerNames.playerO} onChange={(e) => handleNameChange('playerO', e)} disabled />
-        </label>
-      </div>
-    );
-  }
-};
-
-
-// return (
-//   <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-//     <CssBaseline />
-//     <div className="game-mode-select">
-//       <label className="select-label">
-//         Game Mode:
-//         <select className="select-dropdown" value={gameMode} onChange={(e) => handleGameModeChange(e.target.value)}>
-//           <option value="ai">AI Opponent</option>
-//           <option value="multiplayer">Multiplayer</option>
-//         </select>
-//       </label>
-//     </div>
-
-//     <div className="tic-tac-toe">
-//     <label className='player-names'>
-//       Player X Name:
-//       <input
-//         type="text"
-//         value={playerNames.playerX}
-//         onChange={(e) => handleNameChange('playerX', e)}
-//         disabled={gameMode === 'multiplayer'} // Disable based on game mode
-//       />
-//     </label>
-
-//       {gameMode === 'ai' && (
-//         <>
-//           <div className="difficulty-select">
-//             <label className="select-label">
-//               AI Difficulty:
-//               <select className="select-dropdown" value={aiDifficulty} onChange={(e) => setAiDifficulty(e.target.value)}>
-//                 <option value="easy">Easy</option>
-//                 <option value="hard">Hard</option>
-//               </select>
-//             </label>
-//           </div>
-//           {status()}
-//           {renderBoard()}
-//           <button className="new-game-btn" onClick={fetchNewGame}>
-//             Start a New Game <AiOutlineReload className="react-icon reload" />
-//           </button>
-//           <div className="color-mode-toggle">
-//             <IconButton onClick={() => setIsDarkMode((prevMode) => !prevMode)} color="inherit">
-//               {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-//             </IconButton>
-//           </div>
-//           <div className="game-info">
-//             <p>Moves:</p>
-//             <ol className="move-list">{moves}</ol>
-//           </div>
-//           <div className="game-statistics">
-//             <p>Game Statistics:</p>
-//             <ul>
-//               <li>
-//                 Total Games: {gameStatistics.totalGames} <AiOutlineHistory className="react-icon history" />
-//               </li>
-//               <li>
-//                 {getPlayerName('X')} Your Wins: {gameStatistics.playerXWins} <AiFillCrown className="react-icon crown" />
-//               </li>
-//               <li>
-//                 {getPlayerName('O')} Wins: {gameStatistics.playerOWins} <AiFillCrown className="react-icon crown" />
-//               </li>
-//               <li>
-//                 Ties: {tieCount} <AiOutlineHistory className="react-icon history" />
-//               </li>
-//               <li>
-//                 Average Game Duration: {gameStatistics.averageDuration.toFixed(2)} milliseconds{' '}
-//                 <AiOutlineClockCircle className="react-icon clock" />
-//               </li>
-//               <li>
-//                 Best Player: {getBestPlayer()} <AiOutlineTrophy className="react-icon trophy" />
-//               </li>
-//               <li>
-//                 Hot Streak: {getHotStreakPlayer()} <AiOutlineFire className="react-icon fire" />
-//               </li>
-//             </ul>
-//           </div>
-//         </>
-//       )}
-//         {gameMode === 'multiplayer' && <Multiplayer />}
-//     </div>
-//   </ThemeProvider>
-//  );
 
 
 return (
-  <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-    <CssBaseline />
+ <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+ <CssBaseline />
     <div className="game-mode-select">
       <label className="select-label">
         Game Mode:
         <select className="select-dropdown" value={gameMode} onChange={(e) => handleGameModeChange(e.target.value)}>
-          <option value="ai">AI Opponent</option>
-          <option value="multiplayer">Multiplayer</option>
+          <option value="ai">3x AI</option>
+          <option value="multiplayer">3x Multiplayer</option>
+          <option value="ai4x4">4x AI</option>
+          <option value="fourmultiplayer">4x Multiplayer</option>
         </select>
       </label>
     </div>
 
     <div className="tic-tac-toe">
       
-    {gameMode === 'ai' && (
-      <label className='player-namesX'>
-        Player X Name:
-        <input
-          type="text"
-          value={playerNames.playerX}
-          onChange={(e) => handleNameChange('playerX', e)}
-          className="player-input"
-        />
-      </label>
-    )}
-    
-
+      {gameMode === 'ai' && (
+        <label className='player-namesX'>
+          Player X Name:
+          <input
+            type="text"
+            value={playerNames.playerX}
+            onChange={(e) => handleNameChange('playerX', e)}
+            className="player-input"
+          />
+        </label>
+      )}
+      
       {gameMode === 'ai' && (
         <>
           <div className="difficulty-select">
@@ -591,6 +482,7 @@ return (
               <select className="select-dropdown" value={aiDifficulty} onChange={(e) => setAiDifficulty(e.target.value)}>
                 <option value="easy">Easy</option>
                 <option value="hard">Hard</option>
+                <option value="extreme">Extreme</option>
               </select>
             </label>
           </div>
@@ -599,11 +491,17 @@ return (
           <button className="new-game-btn" onClick={fetchNewGame}>
             Start a New Game <AiOutlineReload className="react-icon reload" />
           </button>
+         
+
           <div className="color-mode-toggle">
-            <IconButton onClick={() => setIsDarkMode((prevMode) => !prevMode)} color="inherit">
-              {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-          </div>
+          <IconButton onClick={() => setIsDarkMode((prevMode) => !prevMode)} color="inherit">
+            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+        </div>
+         
+
+
+
           <div className="game-info">
             <p>Moves:</p>
             <ol className="move-list">{moves}</ol>
@@ -623,14 +521,14 @@ return (
         </>
       )}
       {gameMode === 'multiplayer' && <Multiplayer />}
+      {gameMode === 'ai4x4' && <Four />}
+      {gameMode === 'fourmultiplayer' && <FourMultiplayer />}
     </div>
-  </ThemeProvider>
+    </ThemeProvider>
   );
 }
 
 export default TicTacToe;
-
-
 
 
 
